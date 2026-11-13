@@ -1,0 +1,107 @@
+# Prometheus alerting rules for Pathology (generic llcforge-alert metrics).
+# Load with `rule_files: ["pathology-rules.yml"]` or as a PrometheusRule `spec`.
+# Assumes the scrape job is named "pathology"; adjust the `job` matcher if not.
+groups:
+  - name: pathology.availability
+    rules:
+      - alert: PathologyDown
+        expr: up{job="pathology"} == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Pathology is down on {{ $labels.instance }}"
+          description: "The Pathology metrics endpoint has not been scrapeable for 5 minutes."
+
+      - alert: PathologyAbsent
+        expr: absent(up{job="pathology"})
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "No Pathology targets are being scraped"
+
+  - name: pathology.alert-delivery
+    rules:
+      - alert: PathologyAlertDeliveryFailing
+        expr: increase(llcforge_alert_sink_failed_total{tool="pathology"}[15m]) > 0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Pathology cannot deliver alerts to sink {{ $labels.sink }} ({{ $labels.type }})"
+          description: "{{ $value | humanize }} delivery failures in 15 minutes. Undelivered alerts stay queued and are retried."
+
+      - alert: PathologyAlertsDropped
+        expr: increase(llcforge_alert_dropped_total{tool="pathology"}[15m]) > 0
+        labels:
+          severity: critical
+        annotations:
+          summary: "Pathology dropped alerts on {{ $labels.instance }}"
+          description: "Alerts were dropped (intake channel full, queue bound reached or delivery expired)."
+
+      - alert: PathologyAlertQueueBacklog
+        expr: llcforge_alert_queue_depth{tool="pathology"} > 100
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Pathology alert queue backlog: {{ $value }} pending"
+          description: "Alerts are accumulating faster than sinks accept them, or a sink has been down for 15 minutes."
+
+      - alert: PathologySinkBacklog
+        expr: llcforge_alert_sink_queued{tool="pathology"} > 50
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Pathology sink {{ $labels.sink }} has {{ $value }} undelivered alerts"
+
+  - name: pathology.routing
+    rules:
+      - alert: PathologyCriticalFinding
+        expr: increase(pathology_findings_total{severity="critical"}[10m]) > 0
+        labels:
+          severity: critical
+        annotations:
+          summary: "Pathology raised a critical routing finding on {{ $labels.instance }}"
+          description: "New origin or unexpected more-specific on a watched prefix. Check the alert sinks for details."
+
+      - alert: PathologyNoCollectorSession
+        expr: (sum by (instance) (pathology_bmp_sessions_active) + sum by (instance) (pathology_bgp_sessions_established)) == 0
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Pathology on {{ $labels.instance }} has no BMP or BGP session"
+          description: "No router feed is connected; routing anomalies cannot be detected."
+
+      - alert: PathologyBmpParseErrors
+        expr: increase(pathology_bmp_parse_errors_total[15m]) > 0
+        labels:
+          severity: warning
+        annotations:
+          summary: "Pathology closed BMP sessions because of malformed messages"
+
+      - alert: PathologyRibFull
+        expr: increase(pathology_rib_routes_rejected_total[15m]) > 0
+        labels:
+          severity: warning
+        annotations:
+          summary: "Pathology RIB reached rib.max_routes on {{ $labels.instance }}"
+          description: "Routes for unwatched prefixes are not stored; /v1/origins may be incomplete."
+
+      - alert: PathologyStateWriteFailing
+        expr: increase(pathology_baseline_saves_failed_total[30m]) > 0 or increase(pathology_history_write_errors_total[30m]) > 0
+        labels:
+          severity: warning
+        annotations:
+          summary: "Pathology cannot write its baseline or route history"
+
+      - alert: PathologyNotaryUnreachable
+        expr: rate(pathology_notary_lookups_total{result="error"}[15m]) > 0 and rate(pathology_notary_lookups_total{result="ok"}[15m]) == 0
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Pathology cannot reach Notary; findings carry no RPKI state"

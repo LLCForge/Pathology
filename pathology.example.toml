@@ -1,0 +1,102 @@
+# Pathology example configuration.
+# Addresses and ASNs use documentation / private-use ranges; replace them with your own.
+# Secrets are never written here: every *_env key names an environment variable.
+
+[log]
+format = "text"          # "text" or "json"
+level = "info"           # error, warn, info, debug, trace
+
+# BMP (RFC 7854, Loc-RIB RFC 9069): routers connect to Pathology.
+[collector.bmp]
+listen = "0.0.0.0:11019"
+allowed_peers = ["192.0.2.1", "192.0.2.2"]   # only these routers may connect
+
+# Passive, receive-only BGP for routers without BMP. Pathology never
+# advertises a route. Port 179 needs CAP_NET_BIND_SERVICE on Linux.
+# TCP-MD5 is not supported: configure the session without a password.
+# [collector.bgp]
+# listen = "0.0.0.0:179"
+# local_asn = 64496
+# router_id = "192.0.2.254"
+# hold_time = 90
+# [[collector.bgp.peer]]
+# address = "192.0.2.3"
+# asn = 64503
+
+[storage]
+# data_dir = "/var/lib/pathology"  # default: platform data dir ($STATE_DIRECTORY under systemd)
+save_interval = "60s"
+
+[baseline]
+learning_window = "14d"  # findings are downgraded to info until this has elapsed
+min_observations = 3     # ...and at least this many announcements were seen
+# half_life = "30d"      # old paths, origins and communities fade out (unset: never)
+
+[detect]
+community_changes = true # new standard / large communities on a watched prefix
+path_length_delta = 2    # length change that turns a path change into path_length_change
+# relationships_file = "/var/lib/pathology/as-rel.txt"  # CAIDA as-rel: enables route leak detection
+# local_asn = 64496      # receiver ASN for leak checks (default: collector.bgp.local_asn)
+
+[sessions]
+flap_threshold = 3       # peer_flap after this many session downs...
+flap_window = "10m"      # ...inside this window
+
+[[watch]]
+prefix = "198.51.100.0/24"
+expected_origins = [64500]
+
+[[watch]]
+prefix = "2001:db8:100::/48"
+# no expected_origins: the origin is checked against the learned baseline
+
+[rib]
+max_routes = 2000000     # memory bound; watched prefixes are always stored
+
+[history]
+scope = "watched"        # "watched" (and more-specifics) or "all"
+retention = "7d"
+max_events = 100000
+persist = true           # <data_dir>/history/routes-YYYY-MM-DD.jsonl
+
+# Read-only route API + web UI (/, /v1/routes, /v1/prefixes/<p>/paths, /v1/origins).
+[api]
+enabled = true
+listen = "127.0.0.1:8180"
+# token_env = "PATHOLOGY_API_TOKEN"   # require "Authorization: Bearer" on /v1/*
+
+# RPKI state on every finding via Notary (optional, time-boxed).
+# [notary]
+# url = "http://127.0.0.1:8181/"
+# token_env = "NOTARY_API_TOKEN"
+# timeout_ms = 1000
+
+# Alerting (llcforge-alert): sinks, dedup, persistent queue.
+[alerts]
+dedup_window_secs = 600
+
+[[alerts.sink]]
+type = "stdout"
+format = "text"
+min_severity = "warning"
+
+# [[alerts.sink]]
+# type = "telegram"
+# bot_token_env = "TELEGRAM_BOT_TOKEN"
+# chat_id = -1001234567890
+# min_severity = "warning"
+
+# [[alerts.sink]]
+# type = "webhook"
+# url = "https://alerts.example.net/bgp"
+# hmac_secret_env = "PATHOLOGY_WEBHOOK_SECRET"
+
+[silences]
+# api_token_env = "PATHOLOGY_ADMIN_TOKEN"   # mounts /v1/silences on the management listener
+
+[health]
+# admin_token_env = "PATHOLOGY_ADMIN_TOKEN" # mounts POST /v1/reload
+
+# Management listener: /metrics, /healthz, /readyz (+ silences / reload when enabled).
+[metrics]
+listen = "127.0.0.1:9419"

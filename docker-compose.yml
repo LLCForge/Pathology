@@ -1,0 +1,27 @@
+# Example: docker compose up -d
+# Put secrets (bot tokens, routing keys, ...) in ./pathology.env (KEY=value lines,
+# never committed) and reference them from the TOML via *_env settings.
+services:
+  pathology:
+    image: ghcr.io/llcforge/pathology:latest
+    # build: .
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    env_file:
+      - path: ./pathology.env
+        required: false
+    volumes:
+      - ./pathology.toml:/etc/pathology/pathology.toml:ro
+      - pathology-data:/data
+    ports:
+      # Metrics + /healthz + /readyz. Bind to loopback; expose deliberately.
+      - "127.0.0.1:9419:9419"
+      # Route API + web UI (set api.listen = "0.0.0.0:8180" in the TOML).
+      - "127.0.0.1:8180:8180"
+      # BMP from your routers (restrict with collector.bmp.allowed_peers).
+      - "11019:11019"
+
+volumes:
+  pathology-data:

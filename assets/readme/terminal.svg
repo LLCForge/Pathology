@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1292 332" width="1292" height="332" role="img" aria-label="Pathology">
+<rect width="1292" height="332" rx="14" fill="#0E1013"/>
+<rect x="0.5" y="0.5" width="1291" height="331" rx="14" fill="none" stroke="#2A2F36"/>
+<circle cx="24" cy="22" r="6" fill="#FF5F57"/><circle cx="44" cy="22" r="6" fill="#FEBC2E"/><circle cx="64" cy="22" r="6" fill="#28C840"/>
+<text x="646.0" y="27" text-anchor="middle" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" fill="#7C838D">Pathology</text>
+<line x1="0" y1="42" x2="1292" y2="42" stroke="#22262C"/>
+<g font-family="ui-monospace, SFMono-Regular, 'Cascadia Mono', Consolas, Menlo, monospace" font-size="14" fill="#C9CDD3">
+<text x="24" y="66" xml:space="preserve"><tspan fill="#E5A13A">$</tspan> <tspan fill="#F4F5F7" font-weight="700">pathology --config pathology.example.toml replay tests/fixtures/demo.bmp.bin</tspan></text>
+<text x="24" y="88" xml:space="preserve">2026-03-16T09:00:00Z <tspan fill="#F5C451">WARNING</tspan>  path_change   <tspan fill="#7CC4FF">198.51.100.0/24</tspan> via <tspan fill="#7CC4FF">192.0.2.1</tspan> (<tspan fill="#7CC4FF">AS64501</tspan>): AS path 64501 64511 64500 never seen in baseline</text>
+<text x="24" y="110" xml:space="preserve">2026-03-16T09:05:00Z <tspan fill="#F5C451">WARNING</tspan>  new_upstream  <tspan fill="#7CC4FF">198.51.100.0/24</tspan> via <tspan fill="#7CC4FF">192.0.2.3</tspan> (<tspan fill="#7CC4FF">AS64503</tspan>): first-hop upstream <tspan fill="#7CC4FF">AS64503</tspan> never seen in baseline</text>
+<text x="24" y="132" xml:space="preserve">2026-03-16T09:12:00Z <tspan fill="#FF6B6B">CRITICAL</tspan> more_specific <tspan fill="#7CC4FF">198.51.100.128/25</tspan> via <tspan fill="#7CC4FF">192.0.2.1</tspan> (<tspan fill="#7CC4FF">AS64501</tspan>): more-specific of watched <tspan fill="#7CC4FF">198.51.100.0/24</tspan>, origin <tspan fill="#7CC4FF">AS64510</tspan></text>
+<text x="24" y="154" xml:space="preserve">2026-03-16T09:12:05Z <tspan fill="#FF6B6B">CRITICAL</tspan> new_origin    <tspan fill="#7CC4FF">198.51.100.0/24</tspan> via <tspan fill="#7CC4FF">192.0.2.2</tspan> (<tspan fill="#7CC4FF">AS64502</tspan>): origin <tspan fill="#7CC4FF">AS64510</tspan> is not in expected_origins [64500]</text>
+<text x="24" y="176" xml:space="preserve">2026-03-16T09:20:00Z <tspan fill="#F5C451">WARNING</tspan>  withdrawn     <tspan fill="#7CC4FF">2001:db8:100::/48</tspan> via <tspan fill="#7CC4FF">192.0.2.1</tspan> (<tspan fill="#7CC4FF">AS64501</tspan>): watched prefix withdrawn by this peer</text>
+<text x="24" y="198" xml:space="preserve">2026-03-16T09:20:00Z <tspan fill="#F5C451">WARNING</tspan>  upstream_lost <tspan fill="#7CC4FF">2001:db8:100::/48</tspan> via <tspan fill="#7CC4FF">192.0.2.1</tspan> (<tspan fill="#7CC4FF">AS64501</tspan>): no longer reachable via upstream <tspan fill="#7CC4FF">AS64501</tspan></text>
+<text x="24" y="220" xml:space="preserve">2026-03-16T09:25:00Z <tspan fill="#FF6B6B">CRITICAL</tspan> new_origin    <tspan fill="#7CC4FF">2001:db8:100::/48</tspan> via <tspan fill="#7CC4FF">192.0.2.1</tspan> (<tspan fill="#7CC4FF">AS64501</tspan>): origin <tspan fill="#7CC4FF">AS64509</tspan> never seen in baseline</text>
+<text x="24" y="242" xml:space="preserve">2026-03-16T09:25:00Z <tspan fill="#5CD08B">RESOLVED</tspan> upstream_lost <tspan fill="#7CC4FF">2001:db8:100::/48</tspan> via <tspan fill="#7CC4FF">192.0.2.1</tspan> (<tspan fill="#7CC4FF">AS64501</tspan>): reachable via upstream <tspan fill="#7CC4FF">AS64501</tspan> again</text>
+<text x="24" y="264" xml:space="preserve">2026-03-16T09:30:00Z <tspan fill="#F5C451">WARNING</tspan>  upstream_lost <tspan fill="#7CC4FF">198.51.100.0/24</tspan> via <tspan fill="#7CC4FF">192.0.2.3</tspan> (<tspan fill="#7CC4FF">AS64503</tspan>): no longer reachable via upstream <tspan fill="#7CC4FF">AS64503</tspan></text>
+<text x="24" y="286" xml:space="preserve">2026-03-16T09:30:00Z <tspan fill="#F5C451">WARNING</tspan>  session_down  peer <tspan fill="#7CC4FF">192.0.2.3</tspan>: peer down (BMP reason 4)</text>
+<text x="24" y="308" xml:space="preserve">replayed 24 BMP messages: 3 critical, 6 warning, 4 info, 1 session events (10 shown, min_severity=warning)</text>
+</g>
+</svg>

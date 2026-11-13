@@ -1,0 +1,18 @@
+# winget default-locale manifest for Pathology. @VERSION@ is filled in by the release workflow.
+# yaml-language-server: $schema=https://aka.ms/winget-manifest.defaultLocale.1.6.0.schema.json
+PackageIdentifier: LLCForge.Pathology
+PackageVersion: "@VERSION@"
+PackageLocale: en-US
+Publisher: LLCForge
+PublisherUrl: https://github.com/LLCForge
+PackageName: Pathology
+PackageUrl: https://github.com/LLCForge/Pathology
+License: MIT
+LicenseUrl: https://github.com/LLCForge/Pathology/blob/main/LICENSE
+ShortDescription: BGP route monitor for your own routers: BMP and passive BGP collector, learned baselines, deviation alerts
+Tags:
+  - networking
+  - monitoring
+  - llcforge
+ManifestType: defaultLocale
+ManifestVersion: 1.6.0

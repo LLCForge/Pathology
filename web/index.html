@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pathology routes</title>
+<link rel="stylesheet" href="/app.css">
+<script src="/app.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header>
+  <h1>Pathology</h1>
+  <p>Current paths and route history for one prefix, as seen by your routers.</p>
+</header>
+<main id="main">
+  <form id="query" autocomplete="off">
+    <label for="prefix">Prefix</label>
+    <input id="prefix" name="prefix" required maxlength="49" placeholder="198.51.100.0/24" spellcheck="false">
+    <label for="token">API token <span class="hint">(only if api.token_env is set; kept in this tab's memory)</span></label>
+    <input id="token" name="token" type="password" maxlength="512">
+    <button type="submit">Show</button>
+  </form>
+  <p id="status" role="status" aria-live="polite"></p>
+  <section aria-labelledby="graph-title">
+    <h2 id="graph-title">Path graph</h2>
+    <p class="hint">Columns are AS hops from the origin (right) towards your peers (left); every current best path per peer is drawn.</p>
+    <div id="graph" class="graph"></div>
+  </section>
+  <section aria-labelledby="paths-title">
+    <h2 id="paths-title">Current paths</h2>
+    <div class="scroll"><table id="paths">
+      <thead><tr><th scope="col">Router</th><th scope="col">Peer</th><th scope="col">Peer AS</th><th scope="col">AS path</th><th scope="col">Origin</th><th scope="col">Since</th></tr></thead>
+      <tbody></tbody>
+    </table></div>
+  </section>
+  <section aria-labelledby="events-title">
+    <h2 id="events-title">Recent events</h2>
+    <div class="scroll"><table id="events">
+      <thead><tr><th scope="col">Time</th><th scope="col">Kind</th><th scope="col">Prefix</th><th scope="col">Peer</th><th scope="col">AS path</th><th scope="col">Communities</th></tr></thead>
+      <tbody></tbody>
+    </table></div>
+  </section>
+</main>
+</body>
+</html>

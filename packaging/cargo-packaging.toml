@@ -1,0 +1,37 @@
+# Cargo.toml fragment for Pathology packaging. Paste both tables at the end of
+# the tool's Cargo.toml (sync.py does not edit Cargo.toml). The release
+# workflow runs `cargo deb --no-build --target <triple>` and
+# `cargo generate-rpm --target <triple>`; both rewrite target/release/ to
+# target/<triple>/release/ automatically.
+
+[package.metadata.deb]
+maintainer = "LLCForge contributors <https://github.com/LLCForge/Pathology>"
+copyright = "2026, LLCForge contributors"
+license-file = ["LICENSE", "0"]
+extended-description = "BGP route monitor for your own routers: BMP and passive BGP collector, learned baselines, deviation alerts"
+section = "net"
+priority = "optional"
+depends = "$auto"
+assets = [
+    ["target/release/pathology", "usr/bin/", "755"],
+    ["pathology.example.toml", "etc/pathology/pathology.toml", "644"],
+    ["README.md", "usr/share/doc/pathology/README.md", "644"],
+    ["NOTICE", "usr/share/doc/pathology/NOTICE", "644"],
+]
+conf-files = ["/etc/pathology/pathology.toml"]
+# Installs packaging/systemd/pathology.service and the matching maintainer scripts;
+# the unit is not enabled automatically (configure first, then enable).
+systemd-units = { unit-name = "pathology", unit-scripts = "packaging/systemd", enable = false, start = false }
+
+[package.metadata.generate-rpm]
+license = "MIT"
+summary = "BGP route monitor for your own routers: BMP and passive BGP collector, learned baselines, deviation alerts"
+assets = [
+    { source = "target/release/pathology", dest = "/usr/bin/pathology", mode = "755" },
+    { source = "packaging/systemd/pathology.service", dest = "/usr/lib/systemd/system/pathology.service", mode = "644" },
+    { source = "pathology.example.toml", dest = "/etc/pathology/pathology.toml", mode = "644", config = "noreplace" },
+    { source = "README.md", dest = "/usr/share/doc/pathology/README.md", mode = "644", doc = true },
+    { source = "LICENSE", dest = "/usr/share/licenses/pathology/LICENSE", mode = "644", doc = true },
+]
+post_install_script = "systemctl daemon-reload >/dev/null 2>&1 || :"
+post_uninstall_script = "systemctl daemon-reload >/dev/null 2>&1 || :"

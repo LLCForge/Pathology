@@ -1,0 +1,58 @@
+:root {
+  --bg: #f7f7f5;
+  --fg: #1d2327;
+  --muted: #5c666d;
+  --line: #d5d9dc;
+  --accent: #0f766e;
+  --surface: #ffffff;
+  color-scheme: light dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #14181b;
+    --fg: #e8ebed;
+    --muted: #9aa5ad;
+    --line: #2f383e;
+    --accent: #2dd4bf;
+    --surface: #1b2125;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+header, main { max-width: 1100px; margin: 0 auto; padding: 16px; }
+h1 { margin: 0; font-size: 1.6rem; }
+h2 { font-size: 1.1rem; margin: 24px 0 8px; }
+header p, .hint { color: var(--muted); }
+.hint { font-size: 0.85rem; }
+.skip { position: absolute; left: -999px; }
+.skip:focus { left: 16px; top: 8px; background: var(--surface); padding: 4px 8px; }
+form { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: end; }
+label { width: 100%; font-weight: 600; }
+input {
+  flex: 1 1 260px; padding: 8px 10px; font: inherit;
+  color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
+}
+button {
+  padding: 8px 18px; font: inherit; font-weight: 600; cursor: pointer;
+  color: var(--surface); background: var(--accent); border: 0; border-radius: 6px;
+}
+input:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+#status { min-height: 1.5em; color: var(--muted); }
+.graph { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; overflow-x: auto; min-height: 60px; }
+.graph svg { display: block; }
+.graph .edge { stroke: var(--muted); stroke-width: 1.5; fill: none; }
+.graph .node rect { fill: var(--bg); stroke: var(--accent); stroke-width: 1.5; }
+.graph .node.origin rect { fill: var(--accent); }
+.graph .node.origin text { fill: var(--surface); }
+.graph text { fill: var(--fg); font: 12px ui-monospace, "Cascadia Mono", Menlo, monospace; }
+.scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; background: var(--surface); }
+th, td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+td.mono { font-family: ui-monospace, "Cascadia Mono", Menlo, monospace; font-size: 0.85rem; }
+th { font-size: 0.85rem; color: var(--muted); }
+.withdraw { color: #b45309; }
