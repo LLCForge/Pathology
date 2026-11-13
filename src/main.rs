@@ -8,8 +8,8 @@ use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 use anyhow::{Context, Result};
 use clap::{Parser, Subcommand};
-use llcforge_alert::cli::{run_silence_command, ServiceCommand, SilenceCommand};
-use llcforge_alert::{
+use llcforge_beacon::cli::{run_silence_command, ServiceCommand, SilenceCommand};
+use llcforge_beacon::{
     health_router, reload_router, run_service_command, silences_router, ApiToken, Dispatcher,
     DispatcherOptions, Readiness, ReloadSignal, ServiceSpec, Shutdown, SilenceStore,
 };
@@ -84,15 +84,15 @@ enum Command {
 
 fn init_logging(cfg: &Config, quiet: bool) -> Result<()> {
     let format = match cfg.log.format {
-        LogFormat::Text => llcforge_alert::LogFormat::Text,
-        LogFormat::Json => llcforge_alert::LogFormat::Json,
+        LogFormat::Text => llcforge_beacon::LogFormat::Text,
+        LogFormat::Json => llcforge_beacon::LogFormat::Json,
     };
     let level = if quiet {
         "warn"
     } else {
         cfg.log.level.as_str()
     };
-    llcforge_alert::init_logging(format, level, None)
+    llcforge_beacon::init_logging(format, level, None)
 }
 
 fn unix_now() -> u64 {
@@ -117,7 +117,7 @@ fn dispatch(cli: Cli) -> Result<()> {
     match cli.command.unwrap_or(Command::Run) {
         Command::Run => {
             init_logging(&Config::load(&cli.config)?, false)?;
-            llcforge_alert::service::run_foreground(cli.config, daemon)
+            llcforge_beacon::service::run_foreground(cli.config, daemon)
         }
         Command::Service { cmd } => {
             if !matches!(cmd, ServiceCommand::Uninstall) {
@@ -176,7 +176,7 @@ fn notary_client(cfg: &Config) -> Result<Option<Arc<NotaryClient>>> {
     let token = n
         .token_env
         .as_deref()
-        .map(llcforge_alert::env_secret)
+        .map(llcforge_beacon::env_secret)
         .transpose()?;
     Ok(Some(Arc::new(NotaryClient::new(
         &n.url,

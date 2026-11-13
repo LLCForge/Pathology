@@ -63,7 +63,7 @@ Public route collectors only see what reaches them, minutes late and from a hand
 - `GET /`: embedded web UI (no CDN, no external requests) with a per-prefix AS path graph, current paths and recent events.
 - Optional bearer token, security headers (strict CSP, `nosniff`, `DENY` framing), concurrency limit, request timeout, no request bodies.
 
-**Operations** (shared [llcforge-alert](crates/llcforge-alert) kit)
+**Operations** (shared [llcforge-beacon](crates/llcforge-beacon) kit)
 - Alerts in the `llcforge.alert.v1` schema to stdout, webhook (HMAC-signed), Telegram, Slack, Discord, Microsoft Teams, e-mail (SMTP), PagerDuty, Opsgenie and syslog; per-sink severity / kind / resource filters, retries with backoff, rate limits.
 - Crash-safe persistent alert queue with redelivery, deduplication by stable alert id, resolved alerts.
 - Silences / maintenance windows: `pathology silence add|list|remove` and `/v1/silences`.

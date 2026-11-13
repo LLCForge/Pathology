@@ -10,7 +10,7 @@ This document describes how Pathology is put together, where its trust boundarie
 - **Fail safe and loud.** Malformed input, failed deliveries and failed writes are logged and counted; a corrupt baseline stops startup instead of being silently discarded.
 - **Untrusted input everywhere.** Network data, MRT files and relationship files are parsed defensively with explicit size limits. The crate forbids `unsafe` code.
 - **Receive-only.** Pathology never advertises routes; the passive BGP listener sends only OPEN, KEEPALIVE and NOTIFICATION.
-- **Optional neighbours never block.** The Notary lookup is cached, concurrency-limited and time-boxed; alert delivery runs in the llcforge-alert dispatcher, off the detector loop.
+- **Optional neighbours never block.** The Notary lookup is cached, concurrency-limited and time-boxed; alert delivery runs in the llcforge-beacon dispatcher, off the detector loop.
 - **Secrets from the environment.** Tokens and keys are read from environment variables, never from config files or logs.
 - **Portable.** Linux, macOS and Windows; no OpenSSL or other C libraries (rustls/ring).
 
@@ -33,7 +33,7 @@ flowchart LR
   RIB --> API[api.rs /v1/* + web UI]
   D --> AL[alerts.rs]
   AL -. time-boxed .-> N[Notary /v1/validity]
-  AL --> K[llcforge-alert dispatcher, queue, sinks]
+  AL --> K[llcforge-beacon dispatcher, queue, sinks]
   D --> M[/metrics /healthz /readyz]
 ```
 
@@ -42,7 +42,7 @@ flowchart LR
 | File | Responsibility |
 |---|---|
 | `src/main.rs` | CLI (`run`, `check`, `replay`, `import-mrt`, `silence`, `service`), daemon wiring, event loop, periodic save + decay + history prune, configuration reload, graceful shutdown. |
-| `src/config.rs` | TOML config via serde (`deny_unknown_fields`), durations, startup validation (collectors, peers, prefixes, listener collisions, `*_env` names, Notary URL). Embeds llcforge-alert `[alerts]`, `[silences]`, `[health]`. |
+| `src/config.rs` | TOML config via serde (`deny_unknown_fields`), durations, startup validation (collectors, peers, prefixes, listener collisions, `*_env` names, Notary URL). Embeds llcforge-beacon `[alerts]`, `[silences]`, `[health]`. |
 | `src/collector.rs` | BMP TCP listener; allowlist, one task per router, per-session `SessionState`, router up/down events. |
 | `src/bgp_listener.rs` | Passive BGP: OPEN negotiation (4-byte AS, MP, ADD-PATH receive), peer ASN / hold time / BGP ID checks, keepalives from a separate reader task, UPDATEs turned into the same events as BMP Route Monitoring. |
 | `src/bmp.rs` | RFC 7854 framing and parsing, Loc-RIB peer type (RFC 9069), Peer Up OPEN decoding and per-peer ADD-PATH / AS4 state, fallback ADD-PATH detection. |
@@ -59,7 +59,7 @@ flowchart LR
 | `src/mrt.rs` | MRT reader (TABLE_DUMP_V2 incl. ADD-PATH subtypes, BGP4MP / BGP4MP_ET), gzip, 16 MiB record cap. |
 | `src/replay.rs` | Offline BMP replay and MRT import into the baseline. |
 | `src/metrics.rs` | Pathology counters in Prometheus text format. |
-| `crates/llcforge-alert` | Vendored shared kit (sinks, queue, silences, health, reload, logging, service). Updated with `sync.py`, not edited here. |
+| `crates/llcforge-beacon` | Vendored shared kit (sinks, queue, silences, health, reload, logging, service). Updated with `sync.py`, not edited here. |
 
 ## Detection rules
 
@@ -92,7 +92,7 @@ Alert ids are stable per condition (`pathology:<kind>:<prefix>:<discriminator>`)
 - Web UI: static files embedded at build time; DOM built with `textContent` only (no HTML injection), no external requests; the token stays in page memory.
 - Management listener: `/metrics`, `/healthz`, `/readyz` are unauthenticated; `/v1/silences` and `/v1/reload` require bearer tokens and are only mounted when configured.
 - Notary: outbound only, no redirects, response size and value validated; the bearer token comes from the environment.
-- Alert sinks: see the llcforge-alert README (HTTPS, HMAC signing, secrets from the environment, URLs stripped from errors).
+- Alert sinks: see the llcforge-beacon README (HTTPS, HMAC signing, secrets from the environment, URLs stripped from errors).
 
 ## Failure modes
 
@@ -105,7 +105,7 @@ Alert ids are stable per condition (`pathology:<kind>:<prefix>:<discriminator>`)
 | RIB reaches `rib.max_routes` | New routes for unwatched prefixes are not stored (counted); watched prefixes are always stored. |
 | History write fails | Logged and counted; events stay in memory; the day file is reopened on the next event. |
 | Notary slow or down | Lookup times out (`notary.timeout_ms`), finding sent without RPKI state, counted in `pathology_notary_lookups_total{result="error"}`. |
-| Alert sink unreachable | Retries, persistent queue and redelivery in llcforge-alert; the detector loop is never blocked. |
+| Alert sink unreachable | Retries, persistent queue and redelivery in llcforge-beacon; the detector loop is never blocked. |
 | Invalid configuration on reload | Error logged; the running configuration stays active. Listener or `data_dir` changes need a restart. |
 | Corrupt `baseline.json` | Startup fails with a clear error instead of silently relearning. |
 
@@ -126,7 +126,7 @@ See the Roadmap section of the README: no TCP-MD5, no RFC 7606 treat-as-withdraw
 Pathology/
 ├── .github/workflows/        CI (Linux, macOS, Windows), release, dependabot
 ├── assets/                   logos, icons, README images
-├── crates/llcforge-alert/    vendored shared alerting kit (sync.py)
+├── crates/llcforge-beacon/    vendored shared alerting kit (sync.py)
 ├── deploy/                   Grafana dashboard, Prometheus rules, Helm chart
 ├── packaging/                deb/rpm metadata, systemd, launchd, Homebrew, Scoop, winget, Windows service
 ├── src/                      application source (see Modules)

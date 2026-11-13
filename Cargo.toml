@@ -18,7 +18,7 @@ chrono = { version = "0.4", default-features = false, features = ["std", "clock"
 clap = { version = "4", features = ["derive"] }
 flate2 = { version = "1", default-features = false, features = ["rust_backend"] }
 ipnet = { version = "2", features = ["serde"] }
-llcforge-alert = { path = "crates/llcforge-alert", version = "0.1" }
+llcforge-beacon = { path = "crates/llcforge-beacon", version = "0.1" }
 reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "json"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"

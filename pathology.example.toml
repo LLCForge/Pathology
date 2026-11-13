@@ -71,7 +71,7 @@ listen = "127.0.0.1:8180"
 # token_env = "NOTARY_API_TOKEN"
 # timeout_ms = 1000
 
-# Alerting (llcforge-alert): sinks, dedup, persistent queue.
+# Alerting (llcforge-beacon): sinks, dedup, persistent queue.
 [alerts]
 dedup_window_secs = 600
 

@@ -63,7 +63,7 @@ Public route collector'lar yalnızca kendilerine ulaşanı, dakikalar gecikmeyle
 - `GET /`: gömülü web arayüzü (CDN yok, dış istek yok); prefix başına AS path grafiği, güncel path'ler ve son olaylar.
 - İsteğe bağlı bearer token, güvenlik başlıkları (sıkı CSP, `nosniff`, `DENY` frame), eşzamanlılık sınırı, istek zaman aşımı, gövdesiz istekler.
 
-**İşletim** (ortak [llcforge-alert](crates/llcforge-alert) kiti)
+**İşletim** (ortak [llcforge-beacon](crates/llcforge-beacon) kiti)
 - `llcforge.alert.v1` şemasında alarmlar: stdout, webhook (HMAC imzalı), Telegram, Slack, Discord, Microsoft Teams, e-posta (SMTP), PagerDuty, Opsgenie ve syslog; kanal başına önem / tür / kaynak filtreleri, geri çekilmeli yeniden deneme, hız sınırları.
 - Çökmeye dayanıklı kalıcı alarm kuyruğu ve yeniden teslim, sabit alarm kimliğiyle tekilleştirme, çözüldü alarmları.
 - Susturmalar / bakım pencereleri: `pathology silence add|list|remove` ve `/v1/silences`.

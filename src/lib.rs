@@ -4,7 +4,7 @@
 //! ([`bgp_listener`]) are parsed ([`bgp`]), compared against a learned
 //! per-prefix [`baseline`] by the [`detector`], kept in a [`rib`] with a
 //! route history served by the read-only [`api`], and findings are delivered
-//! through llcforge-alert by [`alerts`].
+//! through llcforge-beacon by [`alerts`].
 #![forbid(unsafe_code)]
 
 pub mod alerts;

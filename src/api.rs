@@ -2,7 +2,7 @@
 //!
 //! * the read-only route API (default `127.0.0.1:8180`): `/v1/routes`,
 //!   `/v1/prefixes/<prefix>/paths`, `/v1/origins` and the embedded web UI;
-//! * the management router (`/metrics` plus llcforge-alert health,
+//! * the management router (`/metrics` plus llcforge-beacon health,
 //!   silences and reload routes) served on `metrics.listen`.
 //!
 //! Every response carries security headers; `/v1/*` optionally requires a
@@ -21,7 +21,7 @@ use axum::routing::get;
 use axum::{Json, Router};
 use chrono::{DateTime, Utc};
 use ipnet::IpNet;
-use llcforge_alert::ApiToken;
+use llcforge_beacon::ApiToken;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 use tokio::sync::Semaphore;
@@ -224,7 +224,7 @@ pub fn api_router(rib: SharedRib, history: SharedHistory, token: Option<ApiToken
     if let Some(t) = token {
         v1 = v1.layer(middleware::from_fn_with_state(
             t,
-            llcforge_alert::auth::require_bearer,
+            llcforge_beacon::auth::require_bearer,
         ));
     }
     let ui = Router::new()
@@ -247,9 +247,9 @@ pub fn api_router(rib: SharedRib, history: SharedHistory, token: Option<ApiToken
 }
 
 /// Shared slot for the dispatcher metrics (replaced on configuration reload).
-pub type AlertMetrics = Arc<RwLock<Arc<llcforge_alert::Metrics>>>;
+pub type AlertMetrics = Arc<RwLock<Arc<llcforge_beacon::Metrics>>>;
 
-/// `/metrics` merged with the llcforge-alert admin routes in `extra`.
+/// `/metrics` merged with the llcforge-beacon admin routes in `extra`.
 pub fn management_router(alert_metrics: AlertMetrics, extra: Router) -> Router {
     let metrics = Router::new().route(
         "/metrics",
@@ -436,11 +436,11 @@ mod tests {
     #[tokio::test]
     async fn management_metrics() {
         let m: AlertMetrics = Arc::new(RwLock::new(
-            llcforge_alert::AlertHandle::disabled("pathology").metrics(),
+            llcforge_beacon::AlertHandle::disabled("pathology").metrics(),
         ));
         let app = management_router(
             m,
-            llcforge_alert::health_router(llcforge_alert::Readiness::new()),
+            llcforge_beacon::health_router(llcforge_beacon::Readiness::new()),
         );
         let resp = app
             .clone()
@@ -453,7 +453,7 @@ mod tests {
             .unwrap();
         let text = String::from_utf8(b.to_vec()).unwrap();
         assert!(text.contains("pathology_rib_routes"));
-        assert!(text.contains("llcforge_alert_"), "{text}");
+        assert!(text.contains("llcforge_beacon_"), "{text}");
         let (st, _, _) = get_json(&app, "/healthz", None).await;
         assert_eq!(st, StatusCode::OK);
     }

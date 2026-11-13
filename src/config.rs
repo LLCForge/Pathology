@@ -7,7 +7,7 @@ use std::time::Duration;
 
 use anyhow::{bail, ensure, Context, Result};
 use ipnet::IpNet;
-use llcforge_alert::{AlertsConfig, HealthConfig, SilencesConfig};
+use llcforge_beacon::{AlertsConfig, HealthConfig, SilencesConfig};
 use serde::{Deserialize, Deserializer};
 
 #[derive(Debug, Clone, Deserialize)]
@@ -152,7 +152,7 @@ impl StorageConfig {
     pub fn data_dir(&self) -> PathBuf {
         self.data_dir
             .clone()
-            .unwrap_or_else(|| llcforge_alert::default_data_dir("pathology"))
+            .unwrap_or_else(|| llcforge_beacon::default_data_dir("pathology"))
     }
 }
 
@@ -693,7 +693,7 @@ prefix = "198.51.100.0/24"
         rejects("[metrics]\nlisten = \"0.0.0.0:11019\"", MINIMAL);
         rejects("[api]\nlisten = \"0.0.0.0:11019\"", MINIMAL);
         rejects("[collector.bmp.unknown]\nx = 1", MINIMAL);
-        // The pre-llcforge-alert alert keys are rejected with a clear error.
+        // The pre-llcforge-beacon alert keys are rejected with a clear error.
         rejects("[alerts]\nmin_severity = \"warning\"", MINIMAL);
         rejects("typo_key = 1", MINIMAL);
         let bgp = "[collector.bgp]\nlocal_asn = 64496\nrouter_id = \"192.0.2.254\"\n";

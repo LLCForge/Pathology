@@ -21,7 +21,7 @@ use crate::notary::RpkiState;
 use crate::rib::{self, EventKind, History, Rib, RouteEvent, SharedHistory, SharedRib, Source};
 use crate::sessions::{SessionEvent, SessionId, SessionTracker};
 
-pub use llcforge_alert::Severity;
+pub use llcforge_beacon::Severity;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize)]
 #[serde(rename_all = "snake_case")]

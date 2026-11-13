@@ -10,7 +10,7 @@ After=network-online.target
 [Service]
 Type=simple
 ExecStart=/usr/bin/pathology run --config /etc/pathology/pathology.toml
-# SIGHUP triggers the llcforge-alert ReloadSignal (config reload).
+# SIGHUP triggers the llcforge-beacon ReloadSignal (config reload).
 ExecReload=/bin/kill -HUP $MAINPID
 EnvironmentFile=-/etc/pathology/pathology.env
 Restart=on-failure

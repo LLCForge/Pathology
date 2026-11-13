@@ -1,5 +1,5 @@
 //! Turns findings and session events into `llcforge.alert.v1` alerts and hands
-//! them to the llcforge-alert dispatcher (sinks, dedup, silences, queue).
+//! them to the llcforge-beacon dispatcher (sinks, dedup, silences, queue).
 //!
 //! Every finding is also logged. When Notary is configured, a finding with an
 //! origin ASN gets its RPKI state attached first; the lookup runs in its own
@@ -8,7 +8,7 @@
 use std::sync::{Arc, RwLock};
 
 use chrono::{DateTime, Utc};
-use llcforge_alert::{Alert, AlertHandle};
+use llcforge_beacon::{Alert, AlertHandle};
 use tracing::{error, info, warn};
 
 use crate::detector::{Finding, Severity};

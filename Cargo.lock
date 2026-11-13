@@ -787,7 +787,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "47d9d19d1d6efa0109d2f65ff4c85cddd50bd572e5a00127ab10987290bcefae"
 
 [[package]]
-name = "llcforge-alert"
+name = "llcforge-beacon"
 version = "0.1.0"
 dependencies = [
  "anyhow",
@@ -920,7 +920,7 @@ dependencies = [
  "clap",
  "flate2",
  "ipnet",
- "llcforge-alert",
+ "llcforge-beacon",
  "reqwest",
  "serde",
  "serde_json",

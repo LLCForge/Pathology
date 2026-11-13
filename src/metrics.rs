@@ -1,6 +1,6 @@
 //! Process-wide counters rendered in the Prometheus text format. The HTTP
 //! endpoint lives on the management listener (see `main.rs`), next to
-//! `/healthz`, `/readyz` and the llcforge-alert metrics.
+//! `/healthz`, `/readyz` and the llcforge-beacon metrics.
 
 use std::fmt::Write as _;
 use std::sync::atomic::{AtomicU64, Ordering};
