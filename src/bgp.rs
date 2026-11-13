@@ -420,7 +420,9 @@ pub fn parse_attributes(
                     return Err(bad(code, "COMMUNITIES length is not a multiple of 4"));
                 }
                 attrs.communities = value
-                    .chunks_exact(4)
+                    .as_chunks::<4>()
+                    .0
+                    .iter()
                     .map(|b| u32::from_be_bytes([b[0], b[1], b[2], b[3]]))
                     .collect();
             }
@@ -429,7 +431,9 @@ pub fn parse_attributes(
                     return Err(bad(code, "LARGE_COMMUNITY length is not a multiple of 12"));
                 }
                 attrs.large_communities = value
-                    .chunks_exact(12)
+                    .as_chunks::<12>()
+                    .0
+                    .iter()
                     .map(|b| {
                         let w = |i: usize| u32::from_be_bytes([b[i], b[i + 1], b[i + 2], b[i + 3]]);
                         [w(0), w(4), w(8)]
@@ -462,11 +466,15 @@ fn parse_as_path(value: &[u8], as4: bool, code: u8) -> Result<AsPath, BgpError> 
         }
         let raw = c.take(count * width, "AS_PATH segment")?;
         let asns: Vec<u32> = if as4 {
-            raw.chunks_exact(4)
+            raw.as_chunks::<4>()
+                .0
+                .iter()
                 .map(|b| u32::from_be_bytes([b[0], b[1], b[2], b[3]]))
                 .collect()
         } else {
-            raw.chunks_exact(2)
+            raw.as_chunks::<2>()
+                .0
+                .iter()
                 .map(|b| u32::from(u16::from_be_bytes([b[0], b[1]])))
                 .collect()
         };
