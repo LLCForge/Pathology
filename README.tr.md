@@ -85,7 +85,7 @@ Public route collector'lar yalnızca kendilerine ulaşanı, dakikalar gecikmeyle
 
 > **Durum:** yayın öncesi. Yapılandırma anahtarları ve CLI parametreleri 1.0'dan önce değişebilir.
 
-Gereksinim: güncel bir kararlı Rust araç zinciri, 1.85 veya üstü ([rustup.rs](https://rustup.rs)). Sistem kütüphanesi gerekmez (TLS için rustls kullanılır). Linux, macOS ve Windows'ta derlenir ve çalışır.
+Gereksinim: güncel bir kararlı Rust araç zinciri, 1.88 veya üstü ([rustup.rs](https://rustup.rs)). Sistem kütüphanesi gerekmez (TLS için rustls kullanılır). Linux, macOS ve Windows'ta derlenir ve çalışır.
 
 ```bash
 git clone https://github.com/LLCForge/Pathology.git

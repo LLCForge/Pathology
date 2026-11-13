@@ -85,7 +85,7 @@ Public route collectors only see what reaches them, minutes late and from a hand
 
 > **Status:** pre-release. Configuration keys and CLI flags may change before 1.0.
 
-Requirements: a recent stable Rust toolchain, 1.85 or newer ([rustup.rs](https://rustup.rs)). No system libraries are needed (TLS uses rustls). Builds and runs on Linux, macOS and Windows.
+Requirements: a recent stable Rust toolchain, 1.88 or newer ([rustup.rs](https://rustup.rs)). No system libraries are needed (TLS uses rustls). Builds and runs on Linux, macOS and Windows.
 
 ```bash
 git clone https://github.com/LLCForge/Pathology.git

@@ -416,7 +416,7 @@ pub fn parse_attributes(
             ATTR_AS_PATH => attrs.as_path = parse_as_path(value, opts.as4, code)?,
             ATTR_AS4_PATH => as4_path = Some(parse_as_path(value, true, code)?),
             ATTR_COMMUNITIES => {
-                if value.len() % 4 != 0 {
+                if !value.len().is_multiple_of(4) {
                     return Err(bad(code, "COMMUNITIES length is not a multiple of 4"));
                 }
                 attrs.communities = value
@@ -425,7 +425,7 @@ pub fn parse_attributes(
                     .collect();
             }
             ATTR_LARGE_COMMUNITIES => {
-                if value.len() % 12 != 0 {
+                if !value.len().is_multiple_of(12) {
                     return Err(bad(code, "LARGE_COMMUNITY length is not a multiple of 12"));
                 }
                 attrs.large_communities = value
